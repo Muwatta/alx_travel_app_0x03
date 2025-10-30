@@ -9,9 +9,8 @@ class BookingViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         booking = serializer.save()
-        # Prepare email details
-        to_email = booking.user.email if hasattr(booking, 'user') else 'test@example.com'
+        to_email = getattr(booking.user, 'email', 'test@example.com')
         booking_details = f"Destination: {booking.destination}, Date: {booking.date}, Price: {booking.price}"
-        
-        # Send asynchronously
+
+        # Trigger Celery task for email notification
         send_booking_confirmation_email.delay(to_email, booking_details)
