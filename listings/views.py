@@ -1,11 +1,6 @@
-# listings/views.py
 from django.http import JsonResponse
-from .tasks import send_notification_email
+from .tasks import send_booking_confirmation
 
 def trigger_email(request):
-    send_notification_email.delay(
-        "Welcome!",
-        "This is a test background email.",
-        ["test@example.com"]
-    )
-    return JsonResponse({"message": "Email sent asynchronously!"})
+    send_booking_confirmation.delay('testuser@example.com', 'Flight to Abuja on Nov 5')
+    return JsonResponse({'message': 'Email task triggered successfully!'})
